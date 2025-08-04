@@ -1,20 +1,21 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 import psycopg2
+import os
 
 app = Flask(__name__, template_folder='templates')
-app.secret_key = 'segredo'  # Chave usada pelo flash
+app.secret_key = os.getenv('SECRET_KEY', 'segredo')
 
-# ✅ Conexão com o banco (local)
+# ✅ Conexão com o banco
 def get_conn():
     return psycopg2.connect(
-        dbname='estacionamento',
-        user='postgres',
-        password='1221',
-        host='localhost',
-        port='5432'
+        dbname=os.getenv('DB_NAME'),
+        user=os.getenv('DB_USER'),
+        password=os.getenv('DB_PASS'),
+        host=os.getenv('DB_HOST'),
+        port=os.getenv('DB_PORT', '5432')
     )
 
-# ✅ Página principal (consulta de placas)
+# ✅ Página principal
 @app.route('/', methods=['GET', 'POST'])
 def index():
     resultado = None
@@ -24,10 +25,7 @@ def index():
         try:
             conn = get_conn()
             cur = conn.cursor()
-            cur.execute(
-                'SELECT nome, telefone, placa, modelo, cor FROM veiculos WHERE REPLACE(placa, \'-\', \'\') = %s',
-                (placa,)
-            )
+            cur.execute('SELECT nome, telefone, placa, modelo, cor FROM veiculos WHERE REPLACE(placa, \'-\', \'\') = %s', (placa,))
             resultado = cur.fetchone()
             conn.close()
             print(f"Resultado: {resultado}")
@@ -37,7 +35,7 @@ def index():
             flash(f"Erro: {e}")
     return render_template('index.html', resultado=resultado)
 
-# ✅ Página de cadastro de veículos
+# ✅ Página de cadastro
 @app.route('/cadastros', methods=['GET', 'POST']) 
 def cadastro():
     if request.method == 'POST':
@@ -66,6 +64,7 @@ def cadastro():
             flash(f'Erro: {e}')
     return render_template('cadastro.html')
 
-# ✅ Inicia o servidor Flask
+# ✅ Rodar servidor no Render
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=True, host='0.0.0.0', port=port)
