@@ -7,6 +7,11 @@ app.secret_key = os.getenv('SECRET_KEY', 'segredo')
 
 # ✅ Conexão com o banco via variáveis de ambiente
 def get_conn():
+    print("🔐 Conectando com banco:")
+    print("DB_NAME:", os.getenv('DB_NAME'))
+    print("DB_USER:", os.getenv('DB_USER'))
+    print("DB_HOST:", os.getenv('DB_HOST'))
+
     return psycopg2.connect(
         dbname=os.getenv('DB_NAME'),
         user=os.getenv('DB_USER'),
@@ -70,3 +75,4 @@ def cadastro():
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(debug=True, host='0.0.0.0', port=port)
+
