@@ -56,8 +56,17 @@
                     Cadastrar Novo Veículo
                 </a>
 
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="text-red-500 text-sm mt-4 bg-red-100 p-2 rounded-md">
+                        {{ messages[0] }}
+                    </div>
+                {% endif %}
+                {% endwith %}
+
                 {% if resultado %}
-                <div class="bg-white mt-6 p-4 rounded-lg border">
+                <div class="bg-white mt-6 p-4 rounded-lg border border-gray-200">
+                    <h3 class="text-lg font-semibold mb-2 text-gray-700">Resultado da consulta</h3>
                     <p><strong>Nome:</strong> {{ resultado[0] }}</p>
                     <p><strong>Telefone:</strong> {{ resultado[1] }}</p>
                     <p><strong>Placa:</strong> {{ resultado[2] }}</p>
@@ -65,14 +74,6 @@
                     <p><strong>Cor:</strong> {{ resultado[4] }}</p>
                 </div>
                 {% endif %}
-
-                {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    <div class="text-red-500 text-sm mt-2">
-                        {{ messages[0] }}
-                    </div>
-                {% endif %}
-                {% endwith %}
             </form>
         </div>
     </div>
