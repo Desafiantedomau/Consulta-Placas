@@ -8,11 +8,11 @@ app.secret_key = os.getenv('SECRET_KEY', 'segredo')
 # ✅ Conexão com o banco
 def get_conn():
     return psycopg2.connect(
-        dbname='estacionamento',
-        user='postgres',
-        password='1221',
-        host='localhost',
-        port='5432'
+        dbname=os.getenv('DB_NAME'),
+        user=os.getenv('DB_USER'),
+        password=os.getenv('DB_PASS'),
+        host=os.getenv('DB_HOST'),
+        port=os.getenv('DB_PORT', '5432')
     )
 
 # ✅ Página principal
@@ -68,4 +68,5 @@ def cadastro():
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(debug=True, host='0.0.0.0', port=port)
+
 
